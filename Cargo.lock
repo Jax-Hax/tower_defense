@@ -2348,9 +2348,9 @@ checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
 
 [[package]]
 name = "vertix"
-version = "0.4.0"
+version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "774933c83515005cc297c41ed5c00912ff6f95ae9593770522487ced892497c0"
+checksum = "6f6f48d995a02601d85624b03cbd9b22ebbfb26fa651534fd3c6cbac0b821ca1"
 dependencies = [
  "anyhow",
  "bevy_ecs",
