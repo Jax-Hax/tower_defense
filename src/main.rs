@@ -2,19 +2,22 @@ use bevy_ecs::system::{Query, ResMut};
 use glam::{Quat, Vec3};
 use vertix::{
     camera::{default_3d_cam, Camera},
-    prelude::*, state::UpdateInstance,
+    prelude::*,
 };
+
+use crate::balloon::balloon_movement;
 mod balloon;
 mod map;
+mod object_pooler;
 fn main() {
     pollster::block_on(run());
 }
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen(start))]
 pub async fn run() {
     let camera = Camera::new(
-        Vec3::new(0.0, 5.0, 10.0),
-        f32::to_radians(-90.0),
-        f32::to_radians(-20.0),
+        Vec3::new(0.0, 0.0,0.0),
+        0.,
+        0.,
     );
     // State::new uses async code, so we're going to wait for it to finish
     let (mut state, event_loop) = State::new(true, env!("OUT_DIR"), camera, 5.0, 2.0).await;
@@ -40,21 +43,12 @@ pub async fn run() {
         .create_model_instances("cube.obj", instances.iter_mut().map(|(instance, )| instance).collect(), true)
         .await;
     state.world.spawn_batch(instances);
-    state.schedule.add_systems(movement);
+    state.schedule.add_systems(balloon_movement);
+    state.world.
     //render loop
     run_event_loop(
         state,
         event_loop,
-        Some(default_3d_cam),
+        None,
     );
-}
-fn movement(mut query: Query<(&mut Instance,)>, mut instance_update: ResMut<UpdateInstance>) {
-    let mut instances = vec![];
-    let mut temp_instance = Instance {..Default::default()};
-    for (mut instance,) in &mut query {
-        instance.position[0] += 0.001;
-        instances.push(instance.to_raw());
-        temp_instance = *instance;
-    }
-    temp_instance.update(instances, &mut instance_update);
 }

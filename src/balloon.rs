@@ -9,7 +9,7 @@ pub struct Balloon {
     bloon_type: usize,
     way_point_index: usize,
 }
-fn balloon_movement(mut balloons: Query<(&mut Instance, &mut Balloon)>, map: Res<Map>, mut instance_update: ResMut<UpdateInstance>, balloon_types: Res<BalloonTypes>, delta_time: Res<DeltaTime>) {
+pub fn balloon_movement(mut balloons: Query<(&mut Instance, &mut Balloon)>, map: Res<Map>, mut instance_update: ResMut<UpdateInstance>, balloon_types: Res<BalloonTypes>, delta_time: Res<DeltaTime>) {
     let mut instances = vec![];
     let mut temp_instance = Instance {..Default::default()};
     for (mut instance,mut balloon) in &mut balloons {
@@ -22,6 +22,7 @@ pub struct BalloonType {
     speed: f32,
     damage_dealt: isize, //allows for bloons that gain health?
     children: Vec<Box<BalloonType>>,
+    image_file: String
 }
 #[derive(Resource)]
 pub struct BalloonTypes{
