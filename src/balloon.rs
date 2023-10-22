@@ -18,11 +18,11 @@ pub fn balloon_movement(mut balloons: Query<(&mut Instance, &mut Balloon)>, map:
     temp_instance.update(instances, &mut instance_update);
 }
 pub struct BalloonType {
-    max_health: usize,
-    speed: f32,
-    damage_dealt: isize, //allows for bloons that gain health?
-    children: Vec<Box<BalloonType>>,
-    image_file: String
+    pub max_health: usize,
+    pub speed: f32,
+    pub damage_dealt: isize, //allows for bloons that gain health?
+    pub children: Vec<Box<BalloonType>>,
+    pub image_file: String
 }
 #[derive(Resource)]
 pub struct BalloonTypes{
