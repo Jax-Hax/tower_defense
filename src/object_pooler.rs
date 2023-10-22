@@ -2,7 +2,7 @@ use bevy_ecs::{entity::Entity, system::Resource};
 use vertix::{prelude::Instance, state::State, loader::load_string};
 use serde::Deserialize;
 use crate::enemy::EnemyType;
-#[derive(Deserialize)]
+#[derive(Deserialize,Debug)]
 struct EnemyJSON {
     name: String,
     starting_health: i32,
@@ -13,17 +13,16 @@ struct EnemyJSON {
     pool_am: i32
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize,Debug)]
 struct EnemyJSONData {
     enemies: Vec<EnemyJSON>
 }
 //td specific
 pub async fn pool_from_json(json_file: &str) {
     let json_string = load_string(json_file, env!("OUT_DIR")).await.unwrap();
-    let json: serde_json::Value =
+    let enemy_data: EnemyJSONData =
         serde_json::from_str(&json_string).expect("JSON was not well-formatted");
-    let enemy_data: EnemyJSONData = serde_json::from_str(json_data).unwrap();
-    println!("{:?}", enemy_data);
+    println!("{:#?}", enemy_data);
 }
 //pooler in general
 pub async fn pool_object(pool_vec: Vec<PooledObject>, state: &mut State) {
