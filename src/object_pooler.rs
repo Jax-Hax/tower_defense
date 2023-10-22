@@ -21,7 +21,7 @@ struct EnemyJSONData {
 pub async fn pool_from_json(json_file: &str, state: &mut State) {
     let json_string = load_string(json_file, env!("OUT_DIR")).await.unwrap();
     let enemy_data: EnemyJSONData =
-        serde_json::from_str(&json_string).expect("JSON was not well-formatted");
+        serde_json::from_str(&json_string).expect("Enemy type JSON was not well-formatted");
     let mut enemy_types = vec![];
     let mut pooled_objects = vec![];
     for enemy in enemy_data.enemies {

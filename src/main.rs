@@ -2,6 +2,7 @@ use bevy_ecs::system::{Query, ResMut};
 use glam::{Quat, Vec3, Vec2};
 use map::Map;
 use object_pooler::{pool_object, pool_from_json};
+use round_spawner::load_rounds;
 use vertix::{
     camera::{default_3d_cam, Camera},
     prelude::*,
@@ -11,6 +12,7 @@ use crate::enemy::enemy_movement;
 mod enemy;
 mod map;
 mod object_pooler;
+mod round_spawner;
 fn main() {
     pollster::block_on(run());
 }
@@ -25,6 +27,7 @@ pub async fn run() {
     let (mut state, event_loop) = State::new(true, env!("OUT_DIR"), camera, 5.0, 2.0).await;
     //add models
     pool_from_json("enemy_types.json", &mut state).await;
+    load_rounds("rounds.json", &mut state).await;
     state.schedule.add_systems(enemy_movement);
     state.world.insert_resource(Map { spawn_location: Vec2::new(0.,0.), map_waypoints: vec![Vec2::new(1.,1.)] });
     //render loop
