@@ -39,6 +39,7 @@ pub async fn pool_from_json(json_file: &str, state: &mut State) {
         })
     }
     state.world.insert_resource(EnemyTypes {types: enemy_types});
+    pool_object(pooled_objects, state);
 }
 //pooler in general
 pub async fn pool_object(pool_vec: Vec<PooledObject>, state: &mut State) {
