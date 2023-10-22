@@ -1,5 +1,6 @@
 use bevy_ecs::system::{Query, ResMut};
 use glam::{Quat, Vec3};
+use object_pooler::pool_object;
 use vertix::{
     camera::{default_3d_cam, Camera},
     prelude::*,
@@ -22,7 +23,7 @@ pub async fn run() {
     // State::new uses async code, so we're going to wait for it to finish
     let (mut state, event_loop) = State::new(true, env!("OUT_DIR"), camera, 5.0, 2.0).await;
     //add models
-    
+    //pool_object(pool_vec, &mut state);
     state.schedule.add_systems(balloon_movement);
     //render loop
     run_event_loop(
