@@ -3,11 +3,11 @@ use glam::{Vec2, Vec3};
 use vertix::{prelude::{Instance, delta_time_to_seconds}, resources::{UpdateInstance, DeltaTime}};
 
 use crate::{map::Map, object_pooler::ObjectPooler};
-#[derive(Component)]
+#[derive(Component, Clone, Copy)]
 pub struct Enemy {
-    health: isize,
-    bloon_type: usize,
-    way_point_index: usize,
+    pub health: isize,
+    pub bloon_type: usize,
+    pub way_point_index: usize,
 }
 pub fn enemy_movement(mut world: Commands, mut enemies: Query<(&mut Instance, &mut Enemy)>, map: Res<Map>, mut instance_update: ResMut<UpdateInstance>, enemy_types: Res<EnemyTypes>, mut pooler: ResMut<ObjectPooler>, delta_time: Res<DeltaTime>) {
     let mut instances = vec![];
