@@ -21,7 +21,7 @@ pub struct EnemyType {
     pub starting_health: usize,
     pub speed: f32,
     pub damage_dealt: isize, //allows for bloons that gain health?
-    pub children: Vec<Box<EnemyType>>,
+    pub children: Vec<usize>, //indexes into an array of enemyTypes
     pub image_file: String
 }
 #[derive(Resource)]

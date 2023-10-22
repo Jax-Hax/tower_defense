@@ -1,23 +1,29 @@
 use bevy_ecs::{entity::Entity, system::Resource};
 use vertix::{prelude::Instance, state::State, loader::load_string};
-
+use serde::Deserialize;
 use crate::enemy::EnemyType;
+#[derive(Deserialize)]
+struct EnemyJSON {
+    name: String,
+    starting_health: i32,
+    speed: f64,
+    damage_dealt: i32,
+    image_file: String,
+    children: Vec<i32>,  // Assuming children is an array of integers
+    pool_am: i32
+}
+
+#[derive(Deserialize)]
+struct EnemyJSONData {
+    enemies: Vec<EnemyJSON>
+}
 //td specific
 pub async fn pool_from_json(json_file: &str) {
     let json_string = load_string(json_file, env!("OUT_DIR")).await.unwrap();
     let json: serde_json::Value =
         serde_json::from_str(&json_string).expect("JSON was not well-formatted");
-    let enemies = vec![];
-    for enemy in json["enemies"].as_array(){
-        let enemy_struct = EnemyType {
-            starting_health: enemy["starting_health"],
-            speed: enemy["speed"],
-            damage_dealt: enemy["damage_dealt"],
-            children: enemy["starting_health"],
-            image_file: enemy["image_file"],
-        }
-        enemies.push();
-    }
+    let enemy_data: EnemyJSONData = serde_json::from_str(json_data).unwrap();
+    println!("{:?}", enemy_data);
 }
 //pooler in general
 pub async fn pool_object(pool_vec: Vec<PooledObject>, state: &mut State) {
