@@ -1,0 +1,22 @@
+{
+    "enemies": [
+        {
+            "name": "enemy1",
+            "starting_health": 1,
+            "speed": 1.0,
+            "damage_dealt": 1,
+            "image_file": "cube-diffuse.jpg",
+            "children": [],
+            "pool_am": 100
+        },
+        {
+            "name": "enemy2",
+            "starting_health": 2,
+            "speed": 1.5,
+            "damage_dealt": 1,
+            "image_file": "cube-diffuse.jpg",
+            "children": [0],
+            "pool_am": 100
+        }
+    ]
+}

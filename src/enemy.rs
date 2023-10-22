@@ -4,12 +4,12 @@ use vertix::{prelude::{Instance, delta_time_to_seconds}, resources::{UpdateInsta
 
 use crate::map::Map;
 #[derive(Component)]
-pub struct Balloon {
+pub struct Enemy {
     health: isize,
     bloon_type: usize,
     way_point_index: usize,
 }
-pub fn balloon_movement(mut balloons: Query<(&mut Instance, &mut Balloon)>, map: Res<Map>, mut instance_update: ResMut<UpdateInstance>, balloon_types: Res<BalloonTypes>, delta_time: Res<DeltaTime>) {
+pub fn enemy_movement(mut balloons: Query<(&mut Instance, &mut Enemy)>, map: Res<Map>, mut instance_update: ResMut<UpdateInstance>, balloon_types: Res<EnemyTypes>, delta_time: Res<DeltaTime>) {
     let mut instances = vec![];
     let mut temp_instance = Instance {..Default::default()};
     for (mut instance,mut balloon) in &mut balloons {
@@ -17,16 +17,16 @@ pub fn balloon_movement(mut balloons: Query<(&mut Instance, &mut Balloon)>, map:
     }
     temp_instance.update(instances, &mut instance_update);
 }
-pub struct BalloonType {
-    pub max_health: usize,
+pub struct EnemyType {
+    pub starting_health: usize,
     pub speed: f32,
     pub damage_dealt: isize, //allows for bloons that gain health?
-    pub children: Vec<Box<BalloonType>>,
+    pub children: Vec<Box<EnemyType>>,
     pub image_file: String
 }
 #[derive(Resource)]
-pub struct BalloonTypes{
-    types: Vec<BalloonType>
+pub struct EnemyTypes{
+    types: Vec<EnemyType>
 }
 fn move_towards(p1: Vec2, p2: Vec2, smooth_val: f32) -> Vec3 {
     let x = p1.x + p2.x * smooth_val;
