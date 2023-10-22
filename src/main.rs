@@ -16,9 +16,9 @@ fn main() {
 #[cfg_attr(target_arch = "wasm32", wasm_bindgen(start))]
 pub async fn run() {
     let camera = Camera::new(
-        Vec3::new(0.0, 0.0,0.0),
-        0.,
-        0.,
+        Vec3::new(0.0, 0.0,1.0),
+        -90.0_f32.to_radians(),
+        0.0,
     );
     // State::new uses async code, so we're going to wait for it to finish
     let (mut state, event_loop) = State::new(true, env!("OUT_DIR"), camera, 5.0, 2.0).await;
@@ -31,6 +31,6 @@ pub async fn run() {
     run_event_loop(
         state,
         event_loop,
-        None,
+        Some(default_3d_cam),
     );
 }
