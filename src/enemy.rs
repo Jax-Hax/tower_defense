@@ -13,7 +13,9 @@ pub fn enemy_movement(mut enemies: Query<(&mut Instance, &mut Enemy)>, map: Res<
     let mut instances = vec![];
     let mut temp_instance = Instance {..Default::default()};
     for (mut instance,mut enemy) in &mut enemies {
-        instance.position = move_towards(instance.pos_2d(), map.map_waypoints[enemy.way_point_index], enemy_types.types[enemy.bloon_type].speed * delta_time_to_seconds(delta_time.dt))
+        instance.position = move_towards(instance.pos_2d(), map.map_waypoints[enemy.way_point_index], enemy_types.types[enemy.bloon_type].speed * delta_time_to_seconds(delta_time.dt));
+        instances.push(instance.to_raw());
+        temp_instance = *instance;
     }
     temp_instance.update(instances, &mut instance_update);
 }

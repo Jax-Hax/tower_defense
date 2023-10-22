@@ -1,5 +1,6 @@
 use bevy_ecs::system::{Query, ResMut};
-use glam::{Quat, Vec3};
+use glam::{Quat, Vec3, Vec2};
+use map::Map;
 use object_pooler::{pool_object, pool_from_json};
 use vertix::{
     camera::{default_3d_cam, Camera},
@@ -24,10 +25,9 @@ pub async fn run() {
     let (mut state, event_loop) = State::new(true, env!("OUT_DIR"), camera, 5.0, 2.0).await;
     //add models
     pool_from_json("enemy_types.json", &mut state).await;
-    //state.schedule.add_systems(enemy_movement);
+    state.schedule.add_systems(enemy_movement);
+    state.world.insert_resource(Map { spawn_location: Vec2::new(0.,0.), map_waypoints: vec![Vec2::new(1.,1.)] });
     //render loop
-    let mut update_instance = state.world.get_resource_mut::<UpdateInstance>().unwrap();
-    println!("{0}", update_instance.prefab_slab.len());
     run_event_loop(
         state,
         event_loop,
