@@ -39,7 +39,7 @@ pub async fn pool_from_json(json_file: &str, state: &mut State) {
         })
     }
     state.world.insert_resource(EnemyTypes {types: enemy_types});
-    pool_object(pooled_objects, state);
+    pool_object(pooled_objects, state).await;
 }
 //pooler in general
 pub async fn pool_object(pool_vec: Vec<PooledObject>, state: &mut State) {
@@ -47,8 +47,7 @@ pub async fn pool_object(pool_vec: Vec<PooledObject>, state: &mut State) {
     for pool_object in pool_vec {
         let mut instances = vec![(Instance { ..Default::default() },); pool_object.am_to_pool];
         state
-        .create_model_instances(&pool_object.enemy_type.image_file, instances.iter_mut().map(|(instance, )| instance).collect(), true)
-        .await;
+        .make_sprites(instances.iter_mut().map(|(instance, )| instance).collect(), state.compile_material(&pool_object.enemy_type.image_file).await);
         let entities = state.world.spawn_batch(instances).collect::<Vec<Entity>>();
         pooler.pooled_objects.push(EntityPool {active: entities})
     }
