@@ -9,25 +9,20 @@ pub struct Enemy {
     bloon_type: usize,
     way_point_index: usize,
 }
-#[derive(Component)]
-pub struct Enabled;
-#[derive(Bundle)]
-struct EnabledBundle {
-    enabled: Enabled
-}
-pub fn enemy_movement(mut world: Commands, mut enemies: Query<(&mut Instance, &mut Enemy, &Enabled)>, map: Res<Map>, mut instance_update: ResMut<UpdateInstance>, enemy_types: Res<EnemyTypes>, mut pooler: ResMut<ObjectPooler>, delta_time: Res<DeltaTime>) {
+pub fn enemy_movement(mut world: Commands, mut enemies: Query<(&mut Instance, &mut Enemy)>, map: Res<Map>, mut instance_update: ResMut<UpdateInstance>, enemy_types: Res<EnemyTypes>, mut pooler: ResMut<ObjectPooler>, delta_time: Res<DeltaTime>) {
     let mut instances = vec![];
-    world.entity(pooler.get_inactive(0)).insert(EnabledBundle{enabled: Enabled});
     let mut temp_instance = Instance {..Default::default()};
     let mut is_more_than_one = false;
-    for (mut instance,mut enemy,_) in &mut enemies {
-        instance.position = move_towards(instance.pos_2d(), map.map_waypoints[enemy.way_point_index], enemy_types.types[enemy.bloon_type].speed * delta_time_to_seconds(delta_time.dt));
-        let instance_raw = instance.to_raw();
-        if instance_raw.is_some() {
-            instances.push(instance_raw.unwrap());
+    for (mut instance,mut enemy,) in &mut enemies {
+        if instance.enabled{
+            instance.position = move_towards(instance.pos_2d(), map.map_waypoints[enemy.way_point_index], enemy_types.types[enemy.bloon_type].speed * delta_time_to_seconds(delta_time.dt));
+            let instance_raw = instance.to_raw();
+            if instance_raw.is_some() {
+                instances.push(instance_raw.unwrap());
+            }
+            temp_instance = *instance;
+            is_more_than_one = true;
         }
-        temp_instance = *instance;
-        is_more_than_one = true;
     }
     if is_more_than_one{temp_instance.update(instances, &mut instance_update);}
     

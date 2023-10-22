@@ -1,45 +1,44 @@
+use bevy_ecs::{system::{Resource, ResMut}, component::Component};
 use serde::Deserialize;
-use vertix::{loader::load_string, state::State};
-#[derive(Deserialize,Debug)]
-struct WaveJSON {
+use vertix::{loader::load_string, state::State, resources::Timer};
+
+use crate::object_pooler::ObjectPooler;
+#[derive(Deserialize)]
+struct Wave {
     enemy_type: usize,
     time_btw_enemies: f32,
     is_camo: usize,
     enemy_am: usize,
 }
-#[derive(Deserialize,Debug)]
-struct RoundJSON {
+#[derive(Deserialize)]
+struct Round {
     time_btw_waves: f32,
     repeat_am: usize,
-    waves: Vec<WaveJSON>,
+    waves: Vec<Wave>,
 }
 
-#[derive(Deserialize,Debug)]
-struct RoundsJSONData {
-    rounds: Vec<RoundJSON>
+#[derive(Deserialize)]
+struct Rounds {
+    rounds: Vec<Round>
+}
+#[derive(Deserialize,Resource)]
+pub struct RoundCounter {
+    rounds: Rounds,
+    round_num: usize,
+    wave_num: usize,
+}
+#[derive(Component)]
+struct FuseTime {
+    /// track when the bomb should explode (non-repeating timer)
+    timer: Timer,
 }
 //td specific
 pub async fn load_rounds(json_file: &str, state: &mut State) {
     let json_string = load_string(json_file, env!("OUT_DIR")).await.unwrap();
-    let enemy_data: RoundsJSONData =
+    let rounds: Rounds =
         serde_json::from_str(&json_string).expect("Rounds JSON was not well-formatted");
-    println!("{:#?}", enemy_data);
-    /*let mut enemy_types = vec![];
-    let mut pooled_objects = vec![];
-    for enemy in enemy_data.enemies {
-        let enemy_type = EnemyType {
-            starting_health: enemy.starting_health,
-            speed: enemy.speed,
-            damage_dealt: enemy.damage_dealt,
-            children: enemy.children,
-            image_file: enemy.image_file,
-        };
-        enemy_types.push(enemy_type.clone());
-        pooled_objects.push(PooledObject {
-            enemy_type,
-            am_to_pool: enemy.pool_am
-        })
-    }
-    state.world.insert_resource(EnemyTypes {types: enemy_types});
-    pool_object(pooled_objects, state).await;*/
+    state.world.insert_resource(RoundCounter{rounds, round_num: 0, wave_num: 0})
+}
+pub fn spawn_rounds(mut pooler: ResMut<ObjectPooler>, mut round_counter: ResMut<RoundCounter>) {
+    
 }
