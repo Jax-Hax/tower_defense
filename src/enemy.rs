@@ -1,23 +1,36 @@
-use bevy_ecs::{system::{Query, Res, ResMut, Resource}, component::Component};
+use bevy_ecs::{system::{Query, Res, ResMut, Resource, Commands}, component::Component, world::World, bundle::Bundle};
 use glam::{Vec2, Vec3};
 use vertix::{prelude::{Instance, delta_time_to_seconds}, resources::{UpdateInstance, DeltaTime}};
 
-use crate::map::Map;
+use crate::{map::Map, object_pooler::ObjectPooler};
 #[derive(Component)]
 pub struct Enemy {
     health: isize,
     bloon_type: usize,
     way_point_index: usize,
 }
-pub fn enemy_movement(mut enemies: Query<(&mut Instance, &mut Enemy)>, map: Res<Map>, mut instance_update: ResMut<UpdateInstance>, enemy_types: Res<EnemyTypes>, delta_time: Res<DeltaTime>) {
+#[derive(Component)]
+pub struct Enabled;
+#[derive(Bundle)]
+struct EnabledBundle {
+    enabled: Enabled
+}
+pub fn enemy_movement(mut world: Commands, mut enemies: Query<(&mut Instance, &mut Enemy, &Enabled)>, map: Res<Map>, mut instance_update: ResMut<UpdateInstance>, enemy_types: Res<EnemyTypes>, mut pooler: ResMut<ObjectPooler>, delta_time: Res<DeltaTime>) {
     let mut instances = vec![];
+    world.entity(pooler.get_inactive(0)).insert(EnabledBundle{enabled: Enabled});
     let mut temp_instance = Instance {..Default::default()};
-    for (mut instance,mut enemy) in &mut enemies {
+    let mut is_more_than_one = false;
+    for (mut instance,mut enemy,_) in &mut enemies {
         instance.position = move_towards(instance.pos_2d(), map.map_waypoints[enemy.way_point_index], enemy_types.types[enemy.bloon_type].speed * delta_time_to_seconds(delta_time.dt));
-        instances.push(instance.to_raw());
+        let instance_raw = instance.to_raw();
+        if instance_raw.is_some() {
+            instances.push(instance_raw.unwrap());
+        }
         temp_instance = *instance;
+        is_more_than_one = true;
     }
-    temp_instance.update(instances, &mut instance_update);
+    if is_more_than_one{temp_instance.update(instances, &mut instance_update);}
+    
 }
 #[derive(Clone)]
 pub struct EnemyType {

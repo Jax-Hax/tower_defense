@@ -45,7 +45,7 @@ pub async fn pool_from_json(json_file: &str, state: &mut State) {
 pub async fn pool_object(pool_vec: Vec<PooledObject>, state: &mut State) {
     let mut pooler = ObjectPooler {pooled_objects: vec![]};
     for pool_object in pool_vec {
-        let mut instances = vec![(Instance { ..Default::default() },); pool_object.am_to_pool];
+        let mut instances = vec![(Instance { enabled: false, ..Default::default() },); pool_object.am_to_pool];
         state
         .make_sprites(instances.iter_mut().map(|(instance, )| instance).collect(), state.compile_material(&pool_object.enemy_type.image_file).await);
         let entities = state.world.spawn_batch(instances).collect::<Vec<Entity>>();
