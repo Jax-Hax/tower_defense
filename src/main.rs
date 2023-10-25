@@ -28,7 +28,7 @@ pub async fn run() {
     //add models
     pool_from_json("enemy_types.json", &mut state).await;
     load_rounds("rounds.json", &mut state).await;
-    //state.schedule.add_systems(enemy_movement);
+    state.schedule.add_systems(enemy_movement);
     state.world.insert_resource(Map { spawn_location: Vec2::new(0.,0.), map_waypoints: vec![Vec2::new(1.,1.)] });
     //render loop
     run_event_loop(

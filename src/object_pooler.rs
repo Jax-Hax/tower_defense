@@ -52,7 +52,6 @@ pub async fn pool_object(pool_vec: Vec<PooledObject>, state: &mut State) {
         let mut instances = vec![
             (
                 Instance {
-                    enabled: false,
                     ..Default::default()
                 },
                 Enemy {
@@ -67,7 +66,7 @@ pub async fn pool_object(pool_vec: Vec<PooledObject>, state: &mut State) {
             instances.iter_mut().map(|(instance, _)| instance).collect(),
             state
                 .compile_material(&pool_object.enemy_type.image_file)
-                .await,
+                .await, true
         );
         let entities = state.world.spawn_batch(instances).collect::<Vec<Entity>>();
         pooler.pooled_objects.push(EntityPool { active: entities })
